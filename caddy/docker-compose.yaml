@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  caddy:
+    image: apples723/caddy-auth:v2-dns
+    container_name: caddy-auth
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+networks:
+  default:
+    external:
+      name: caddy
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:

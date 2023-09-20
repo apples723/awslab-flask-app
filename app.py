@@ -29,7 +29,7 @@ def update_global_health(status):
         return f"Global status has been updated to {status}"
         
 
-
+ø
 #random health status for r53 checking
 @app.route("/health")
 def random_health_check():

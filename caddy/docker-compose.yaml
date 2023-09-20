@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   caddy:
-    image: apples723/caddy-auth:v2-dns
+    image: apples723/caddy-auth:v3
     container_name: caddy-auth
     ports:
       - 80:80

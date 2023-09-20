@@ -4,19 +4,30 @@ import json
 import random 
 app = Flask(__name__)
 
-#GLOBAL APP RESPONSES
-global_health = True
-if global_health:
-    global_status = 200
-if global_health == False:
-    global_status = 400
+global_status = int(open("status_code").read())
+
+valid_status_codes = ["200", "201", "400", "401", "402", "403", "404", "302"]
+
 
 #changable health response
 @app.route("/health/global")
 def health_check():
+    global_health = False
+    global_status = int(open("status_code").read())
+    print("health code:")
+    print(global_status)
+    if global_status >= 200 and global_status <= 299:
+        global_health = True
     return f"Is the cloud healthy? Status: {global_health}", global_status
 
-@app.route("/health/update",)
+@app.route("/health/update/<status>")
+def update_global_health(status):
+    if len(status) != 3 or status not in valid_status_codes: 
+        return f"You provided a invalid HTTP status code", 404
+    with open("status_code", "w") as sf:
+        sf.write(status)
+        return f"Global status has been updated to {status}"
+        
 
 
 #random health status for r53 checking

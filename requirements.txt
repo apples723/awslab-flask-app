@@ -1,0 +1,11 @@
+SQLAlchemy
+beautifulsoup4            
+Bootstrap-Flask           
+boto3
+bs4
+Flask                     
+Flask-Login               
+Flask-SQLAlchemy          
+Flask-WTF
+PyMySQL
+mysqlclient

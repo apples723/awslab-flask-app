@@ -1,0 +1,3 @@
+https://app1.slalom.awslab.cloud { 
+    reverse_proxy localhost:8000
+}

@@ -1,3 +1,7 @@
+{
+    acme_dns route53
+}
+
 https://app1-uswe2-a.slalom.awslab.cloud { 
-    reverse_proxy localhost:8000
+    reverse_proxy awslab-flask:8000
 }

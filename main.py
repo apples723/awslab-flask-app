@@ -1,6 +1,7 @@
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, url_for
 import os
 import json
+import random 
 app = Flask(__name__)
 
 #GLOBAL APP RESPONSES
@@ -10,11 +11,22 @@ if global_health:
 if global_health == False:
     global_status = 400
 
-
 #changable health response
-@app.route("/health")
+@app.route("/health/global")
 def health_check():
     return f"Is the cloud healthy? Status: {global_health}", global_status
+
+@app.route("/health/update",)
+
+
+#random health status for r53 checking
+@app.route("/health")
+def random_health_check():
+    status_code_choices = ["200", "201", "400", "401", "402", "403", "404", "302"]
+    status_code = random.choice(status_code_choices)
+    if status_code == "302":
+        return url_for(redirected)
+    return f"Status code {status_code}", int(status_code)
 
 @app.route("/ping")
 def ping():
@@ -39,5 +51,3 @@ def redirected():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
-
- 

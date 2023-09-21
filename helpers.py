@@ -1,6 +1,6 @@
 import boto3
-
-ssmc = boto3.Client("ssm", "us-west-2")
+import requests
+ssmc = boto3.client("ssm", "us-west-2")
 
 def get_instance_az_letter(az=None):
     az = requests.get("http://169.254.169.254/latest/meta-data/placement/availability-zone").text[-1]
@@ -18,3 +18,8 @@ def get_instance_name(az=None, prefix=None):
 def get_status_from_ssm(param_name="/slalom-awslab-cloud/flask-app/http-satus-code"):
     status = ssmc.get_parameter(Name=param_name)
     return status["Parameter"]["Value"]
+
+def update_status_in_ssm(status, param_name="/slalom-awslab-cloud/flask-app/http-status-code"):
+    update_command = ssmc.put_parameter(Name=param_name, Value=status, Overwwrite=True)
+    update_command_status = update_command["ResponseMetadata"]["HTTPStatusCode"]
+    return update_command_status

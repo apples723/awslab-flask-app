@@ -5,9 +5,7 @@ import random
 app = Flask(__name__)
 
 global_status = int(open("status_code").read())
-
 valid_status_codes = ["200", "201", "400", "401", "402", "403", "404", "302"]
-
 
 #changable health response
 @app.route("/health/global")
@@ -27,14 +25,13 @@ def update_global_health(status):
     with open("status_code", "w") as sf:
         sf.write(status)
         return f"Global status has been updated to {status}"
-        
-#random health status for r53 checking
+
 @app.route("/health")
 def random_health_check():
     status_code_choices = ["200", "201", "400", "401", "402", "403", "404", "302"]
     status_code = random.choice(status_code_choices)
     if status_code == "302":
-        return url_for(redirected)
+        return redirect(url_for("redirected"))
     return f"Status code {status_code}", int(status_code)
 
 @app.route("/ping")
@@ -54,6 +51,7 @@ def unhealthy():
 def health_redirect():
     return redirect("/redirected")
 
+        
 @app.route("/redirected")
 def redirected():
     return  "The cloud redirected you here!", 302

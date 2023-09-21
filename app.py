@@ -2,10 +2,16 @@ from flask import Flask, redirect, request, url_for
 import os
 import json
 import random 
+import helpers as h
 app = Flask(__name__)
 
 global_status = int(open("status_code").read())
 valid_status_codes = ["200", "201", "400", "401", "402", "403", "404", "302"]
+
+@app.route("/whoami")
+def whoami():
+    instance_name = h.get_instance_name()
+    return f"You currently are on instance: {instance_name}"
 
 #changable health response
 @app.route("/health/global")

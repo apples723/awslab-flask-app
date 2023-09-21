@@ -8,4 +8,3 @@ Flask-Login
 Flask-SQLAlchemy          
 Flask-WTF
 PyMySQL
-mysqlclient

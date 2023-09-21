@@ -17,7 +17,7 @@ def whoami():
 @app.route("/health/global")
 def health_check():
     global_health = False
-    global_status = int(open("status_code").read())
+    global_status = int(h.get_status_from_ssm())
     print("health code:")
     print(global_status)
     if global_status >= 200 and global_status <= 299:
@@ -28,9 +28,8 @@ def health_check():
 def update_global_health(status):
     if len(status) != 3 or status not in valid_status_codes: 
         return f"You provided a invalid HTTP status code", 404
-    with open("status_code", "w") as sf:
-        sf.write(status)
-        return f"Global status has been updated to {status}"
+    status = h.update_status_in_ssm(status)
+    return f"Global status has been updated to {status}"
 
 @app.route("/health")
 def random_health_check():

@@ -1,9 +1,9 @@
 terraform {
-    backend "s3" {
-        bucket = "gsiders-tf"
-        region = "us-east-1"
-        key = "aws-cert/infra/terraform.tfstate"
-    }
+  backend "s3" {
+    bucket = "gsiders-tf"
+    region = "us-east-1"
+    key    = "aws-cert/infra/terraform.tfstate"
+  }
 }
 
 provider "aws" {
@@ -15,7 +15,7 @@ provider "aws" {
     }
   }
 }
-
+#Create VPC with private/public in 2azs
 module "vpc" {
   source  = "aws-ia/vpc/aws"
   version = ">= 4.2.0"
@@ -39,28 +39,21 @@ module "vpc" {
     }
   }
 }
-
-
-#DynamoDB 
-resource "aws_dynamodb_table" "example" {
-  name         = "flask-app-status"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "id"
-
-  attribute {
-    name = "id"
-    type = "S"
-  }
-
-  tags = {
-    Name = "example-table"
-  }
+output "public_subnet_ids" {
+  value = [for _, value in module.vpc.public_subnet_attributes_by_az : value.id]
 }
 
+output "private_subnet_ids" {
+  value = [for _, value in module.vpc.private_subnet_attributes_by_az : value.id]
+}
 
-resource "aws_iam_role" "ec2_dynamodb_role" {
-  name = "awslab-flask-app-ddb"
+output "vpc_id" {
+  value = module.vpc.vpc_attributes.id
+}
+#EC2 instance profile
 
+resource "aws_iam_role" "ec2_role" {
+  name               = "awslab-ec2-flask-app"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role_policy.json
 }
 
@@ -76,28 +69,10 @@ data "aws_iam_policy_document" "ec2_assume_role_policy" {
   }
 }
 
-data "aws_iam_policy_document" "ec2_dynamodb_policy" {
-  statement {
-    actions = [
-      "dynamodb:GetItem",
-      "dynamodb:PutItem",
-      "dynamodb:UpdateItem",
-      "dynamodb:DeleteItem",
-      "dynamodb:Scan",
-      "dynamodb:Query"
-    ]
-
-    effect = "Allow"
-
-    resources = [aws_dynamodb_table.flaks_app.arn]
-  }
+output "ec2_role_id" {
+  value = aws_iam_role.ec2_role.id
 }
 
-resource "aws_iam_role_policy" "ec2_dynamodb_policy" {
-  name = "ec2-dynamodb-policy"
-  role = aws_iam_role.ec2_dynamodb_role.id
-
-  policy = data.aws_iam_policy_document.ec2_dynamodb_policy.json
+output "ec2_role_name" {
+  value = aws_iam_role.ec2_role.name
 }
-
-

@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  caddy:
+  flask-app:
     image: apples723/awslab-flask-app:v1.2.0
     container_name: awslab-flask
     ports:

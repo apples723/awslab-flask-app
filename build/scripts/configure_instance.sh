@@ -1,8 +1,8 @@
 echo "setting up instance....."
 mkdir dev
 echo "installing docker....."
-curl -fsSL https://get.docker.com -o get-docker.sh \
-chmod +x get-docker.sh \ 
+curl -fsSL https://get.docker.com -o get-docker.sh 
+chmod +x get-docker.sh  
 sudo ./get-docker.sh > /dev/null
 echo "installing aws cli..."
 sudo apt install unzip -y > /dev/null

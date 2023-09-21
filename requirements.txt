@@ -8,3 +8,4 @@ Flask-Login
 Flask-SQLAlchemy          
 Flask-WTF
 PyMySQL
+requests

@@ -3,6 +3,7 @@ locals {
   public_subnet_ids  = data.terraform_remote_state.infra.outputs.public_subnet_ids
   ec2_role_name = data.terraform_remote_state.infra.outputs.ec2_role_name
   vpc_id             = data.terraform_remote_state.infra.outputs.vpc_id
+  ec2_instance_profile_name = data.terraform_remote_state.infra.outputs.ec2_instance_profile_name
   hosted_zone_id     = "Z0929837KI7V4LSZF7ZR"
   az_letters         = ["a", "b", "c", "d"]
   dns_weights        = ["200", "100"]
@@ -23,6 +24,8 @@ data "aws_iam_policy_document" "ec2_ssm_param_policy" {
     actions = [
       "ssm:GetParameter",
       "ssm:PutParameter",
+      "ssm:GetParameters",
+      "ssm:GetParametersByPath",
       "ssm:DeleteParameter"
     ]
     effect = "Allow"
@@ -84,6 +87,7 @@ resource "aws_instance" "flask_app" {
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.flask_app.id]
   subnet_id              = local.public_subnet_ids[count.index]
+  iam_instance_profile = local.ec2_instance_profile_name
   tags = {
     Name = "flask-app-${local.az_letters[count.index]}"
   }

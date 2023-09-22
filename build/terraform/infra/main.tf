@@ -7,7 +7,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-west-2"
+  region = "us-east-1"
   default_tags {
     tags = {
       CreatorName = "grant.siders@slalom.com"
@@ -15,41 +15,40 @@ provider "aws" {
     }
   }
 }
-#Create VPC with private/public in 2azs
-module "vpc" {
-  source  = "aws-ia/vpc/aws"
-  version = ">= 4.2.0"
 
-  name       = "awslab-vpc"
-  cidr_block = "10.100.0.0/20"
-  az_count   = 2
 
-  subnets = {
-    public = {
-      netmask                   = 24
-      nat_gateway_configuration = "all_azs"
-      tags = {
-        subnet_type = "public"
-      }
-    }
+#Flask App Status SSM
 
-    private = {
-      netmask                 = 24
-      connect_to_public_natgw = true
-    }
+resource "aws_ssm_parameter" "flask_app_status" {
+  name  = "/slalom-awslab-cloud/flask-app/http-status-code"
+  type  = "String"
+  value = "200"
+}
+
+
+data "aws_iam_policy_document" "ec2_ssm_param_policy" {
+  statement {
+    actions = [
+      "ssm:GetParameter",
+      "ssm:PutParameter",
+      "ssm:GetParameters",
+      "ssm:GetParametersByPath",
+      "ssm:DeleteParameter"
+    ]
+    effect = "Allow"
+
+    resources = [aws_ssm_parameter.flask_app_status.arn]
   }
 }
-output "public_subnet_ids" {
-  value = [for _, value in module.vpc.public_subnet_attributes_by_az : value.id]
+
+resource "aws_iam_role_policy" "ec2_ssm_policy" {
+  name   = "awslab-ec2-ssm-param-policy"
+  role   = aws_iam_role.ec2_role.name
+  policy = data.aws_iam_policy_document.ec2_ssm_param_policy.json
 }
 
-output "private_subnet_ids" {
-  value = [for _, value in module.vpc.private_subnet_attributes_by_az : value.id]
-}
 
-output "vpc_id" {
-  value = module.vpc.vpc_attributes.id
-}
+
 #EC2 instance profile
 
 resource "aws_iam_instance_profile" "flask_app" {

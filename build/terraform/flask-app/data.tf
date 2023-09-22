@@ -1,6 +1,6 @@
 #Data sources 
 
-#VPC 
+#infra
 data "terraform_remote_state" "infra" {
   backend = "s3"
   config = {
@@ -10,7 +10,15 @@ data "terraform_remote_state" "infra" {
   }
 }
 
-
+#VPC 
+data "terraform_remote_state" "vpc" {
+  backend = "s3"
+  config = {
+    bucket = "gsiders-tf"
+    key    = "aws-cert/vpc/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
 #Home IP
 data "http" "home_ip" {
   url = "https://homeip.gsiders.app"

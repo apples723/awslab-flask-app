@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 locals {
   private_subnet_ids = data.terraform_remote_state.infra.outputs.private_subnet_ids
   public_subnet_ids  = data.terraform_remote_state.infra.outputs.public_subnet_ids
@@ -5,6 +7,10 @@ locals {
   vpc_id             = data.terraform_remote_state.infra.outputs.vpc_id
   ec2_instance_profile_name = data.terraform_remote_state.infra.outputs.ec2_instance_profile_name
   hosted_zone_id     = "Z0929837KI7V4LSZF7ZR"
+  region_shorthand = {
+    "us-east-1" : "usea1"
+    "us-west-2" : "uswe2"
+  } 
   az_letters         = ["a", "b", "c", "d"]
   dns_weights        = ["200", "100"]
 }
@@ -104,7 +110,7 @@ resource "aws_eip" "flask_app" {
 
 resource "aws_route53_record" "flask_app" {
   count = length(aws_eip.flask_app)
-  name    = "flask-app-${local.az_letters[count.index]}"
+  name    = "flask-app-${local.az_letters[count.index]}-${local.region_shorthand[data.aws_region.current.name]}"
   type    = "A"
   ttl = 300
   zone_id = local.hosted_zone_id
@@ -113,5 +119,5 @@ resource "aws_route53_record" "flask_app" {
 }
 
 output "flask_app_eips" {
-  value = [ for i in aws_eip.aws_eip.flask_app : i.public_ip ]
+  value = [ for i in aws_eip.flask_app : i.public_ip ]
 }

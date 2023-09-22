@@ -10,6 +10,7 @@ locals {
   region_shorthand = {
     "us-east-1" : "usea1"
     "us-west-2" : "uswe2"
+    "ap-southeast-1" : "apse1"
   } 
   az_letters         = ["a", "b", "c", "d"]
   dns_weights        = ["200", "100"]

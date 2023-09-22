@@ -12,9 +12,10 @@ variable "vpc_cidr" {
 variable "vpc_name" {
   default = "awslab-vpc"
 }
+variable "region" {}
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region = var.region
   default_tags {
     tags = {
       CreatorName = "grant.siders@slalom.com"

@@ -112,3 +112,6 @@ resource "aws_route53_record" "flask_app" {
   depends_on = [ aws_eip.flask_app ]
 }
 
+output "flask_app_eips" {
+  value = [ for i in aws_eip.aws_eip.flask_app : i.public_ip ]
+}

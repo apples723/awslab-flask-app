@@ -5,14 +5,20 @@ import random
 import helpers as h
 app = Flask(__name__)
 
-global_status = int(open("status_code").read())
+
 valid_status_codes = ["200", "201", "400", "401", "402", "403", "404", "302"]
 
 @app.route("/whoami")
+@app.route("/")
 def whoami():
-    instance_name = h.get_instance_name()
-    return f"You currently are on instance: {instance_name}"
-
+    
+    try: 
+        instance_name = h.get_instance_name()
+        return f"Welcome to AWSLab-FlaskApp. You currently are on instance: {instance_name}"
+    
+    except:
+        return "Welcome to AWSLab-FlaskApp. That said it doesn't seem you are actually on an AWS instance"
+    
 #changable health response
 @app.route("/health/global")
 def health_check():

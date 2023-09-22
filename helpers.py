@@ -3,7 +3,7 @@ import requests
 ssmc = boto3.client("ssm", "us-west-2")
 
 def get_instance_az_letter(az=None):
-    az = requests.get("http://169.254.169.254/latest/meta-data/placement/availability-zone").text[-1]
+    az = requests.get("http://169.254.169.254/latest/meta-data/placement/availability-zone", timeout=2).text[-1]
     return az
 
 def get_instance_name(az=None, prefix=None):

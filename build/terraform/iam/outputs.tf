@@ -9,3 +9,7 @@ output "ec2_role_name" {
 output "ec2_instance_profile_name" {
   value = aws_iam_instance_profile.flask_app.name
 }
+
+output "ecs_task_execution_role_arn" {
+  value = aws_iam_role.ecs_task_execution_role.arn
+}

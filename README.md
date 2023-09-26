@@ -1,6 +1,6 @@
-# AWSLAB-Flask-App
+# AWSLab-Flask-App
 
-This is a simple application that can be used to simulate health checks and other API functions for studying and devlopment on AWS
+This is a simple application that can be used to simulate health checks and other API functions for studying and development on AWS
 
 ## Flask-App
 

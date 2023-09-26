@@ -1,21 +1,24 @@
-data "aws_region" "current" {}
-
-locals {
-  private_subnet_ids = data.terraform_remote_state.vpc.outputs.private_subnet_ids
-  public_subnet_ids  = data.terraform_remote_state.vpc.outputs.public_subnet_ids
-  ec2_role_name = data.terraform_remote_state.infra.outputs.ec2_role_name
-  vpc_id             = data.terraform_remote_state.vpc.outputs.vpc_id
-  ec2_instance_profile_name = data.terraform_remote_state.infra.outputs.ec2_instance_profile_name
-  hosted_zone_id     = "Z0929837KI7V4LSZF7ZR"
-  region_shorthand = {
-    "us-east-1" : "usea1"
-    "us-west-2" : "uswe2"
-    "ap-southeast-1" : "apse1"
-  } 
-  az_letters         = ["a", "b", "c", "d"]
-  dns_weights        = ["200", "100"]
+resource "aws_instance" "flask_app" {
+  count               = length(local.public_subnet_ids)
+  key_name               = "gsiders-uswe2"
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.flask_app.id]
+  subnet_id              = local.public_subnet_ids[count.index]
+  iam_instance_profile = local.ec2_instance_profile_name
+  tags = {
+    Name = "flask-app-${local.az_letters[count.index]}"
+  }
 }
 
+resource "aws_eip" "flask_app" {
+  count = length(aws_instance.flask_app)
+  instance = aws_instance.flask_app[count.index].id
+  tags = {
+    Name = "flask-app-${local.az_letters[count.index]}"
+  }
+  depends_on = [ aws_instance.flask_app ]
+}
 
 
 #Security Group 
@@ -56,29 +59,8 @@ resource "aws_security_group_rule" "outbound" {
   security_group_id = aws_security_group.flask_app.id
 }
 
-#instances 
 
-resource "aws_instance" "flask_app" {
-  count               = length(local.public_subnet_ids)
-  key_name               = "gsiders-uswe2"
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = [aws_security_group.flask_app.id]
-  subnet_id              = local.public_subnet_ids[count.index]
-  iam_instance_profile = local.ec2_instance_profile_name
-  tags = {
-    Name = "flask-app-${local.az_letters[count.index]}"
-  }
-}
-
-resource "aws_eip" "flask_app" {
-  count = length(aws_instance.flask_app)
-  instance = aws_instance.flask_app[count.index].id
-  tags = {
-    Name = "flask-app-${local.az_letters[count.index]}"
-  }
-  depends_on = [ aws_instance.flask_app ]
-}
+#R53 records for each instance
 
 resource "aws_route53_record" "flask_app" {
   count = length(aws_eip.flask_app)

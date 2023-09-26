@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "gsiders-tf"
-    key    = "aws-cert/flask-app/terraform.tfstate"
+    key    = "awslab-cloud/flask-app/terraform.tfstate"
     region = "us-east-1"
 
   }

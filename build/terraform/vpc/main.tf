@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket = "gsiders-tf"
     region = "us-east-1"
-    key    = "aws-cert/vpc/terraform.tfstate"
+    key    = "awslab-cloud/vpc/terraform.tfstate"
   }
 }
 variable "vpc_cidr" {

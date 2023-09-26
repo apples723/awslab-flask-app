@@ -1,13 +1,14 @@
-#Data sources 
+data "aws_region" "current" {}
 
-#infra
-data "terraform_remote_state" "infra" {
+#IAM
+data "terraform_remote_state" "iam" {
   backend = "s3"
   config = {
     bucket = "gsiders-tf"
-    key    = "aws-cert/infra/terraform.tfstate"
+    key    = "awslab-cloud/iam/terraform.tfstate"
     region = "us-east-1"
   }
+  
 }
 
 #VPC 
@@ -15,10 +16,12 @@ data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {
     bucket = "gsiders-tf"
-    key    = "aws-cert/vpc/terraform.tfstate"
+    key    = "awslab-cloud/vpc/terraform.tfstate"
     region = "us-east-1"
   }
+  workspace = terraform.workspace
 }
+
 #Home IP
 data "http" "home_ip" {
   url = "https://homeip.gsiders.app"

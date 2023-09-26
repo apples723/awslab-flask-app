@@ -2,7 +2,7 @@ resource "aws_ecs_cluster" "main" {
   name = var.cluster_name
 }
 
-data "template_file" "myapp" {
+data "template_file" "flask_app" {
   template = file("./templates/flask_app.json.tpl")
 
   vars = {
@@ -22,6 +22,10 @@ resource "aws_ecs_task_definition" "flask_app" {
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
   container_definitions    = data.template_file.flask_app.rendered
+  runtime_platform {
+    cpu_architecture = "ARM64"
+  }
+  depends_on = [ aws_alb.flask_app, aws_alb_target_group.flask_app, aws_alb_listener.front_end ]
 }
 
 resource "aws_ecs_service" "main" {
@@ -33,7 +37,13 @@ resource "aws_ecs_service" "main" {
 
   network_configuration {
     security_groups  = [data.terraform_remote_state.flask_app.outputs.sg_id]
-    subnets          = data.terraform_remote_state.vpc.outputs.private_subnet_ids
+    subnets          = data.terraform_remote_state.vpc.outputs.public_subnet_ids
     assign_public_ip = true
   }
+  load_balancer {
+    target_group_arn = aws_alb_target_group.flask_app.id
+    container_name   = "awslab-flask-app"
+    container_port   = var.app_port
+  }
+  depends_on = [ aws_alb.flask_app, aws_alb_listener.front_end, aws_alb_target_group.flask_app ]
 }

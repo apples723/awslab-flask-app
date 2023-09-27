@@ -6,6 +6,8 @@ resource "aws_instance" "flask_app" {
   vpc_security_group_ids = [aws_security_group.flask_app.id]
   subnet_id              = local.public_subnet_ids[count.index]
   iam_instance_profile = local.ec2_instance_profile_name
+  user_data_base64 = data.local_file.user_data.content_base64
+  user_data_replace_on_change = true
   tags = {
     Name = "flask-app-${local.az_letters[count.index]}"
   }
@@ -31,6 +33,7 @@ resource "aws_security_group" "flask_app" {
 
 #allows access from the IP of where the apply is ran
 resource "aws_security_group_rule" "my_ip" {
+  count = 0
   from_port         = 0
   to_port           = 0
   protocol          = "-1"

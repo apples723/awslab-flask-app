@@ -47,3 +47,9 @@ data "aws_ami" "ubuntu" {
 
   owners = ["099720109477"] # Canonical
 }
+
+#USERDATA
+
+data "local_file" "user_data" {
+  filename = "${path.module}/user_data.sh"
+}

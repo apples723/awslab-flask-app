@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   flask-app:
-    image: apples723/awslab-flask-app:v1.2.0
+    image: apples723/awslab-flask-app:v1.3.0-amd64
     container_name: awslab-flask
     ports:
       - 8000:8000

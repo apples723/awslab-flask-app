@@ -35,6 +35,7 @@ variable "environment" {
 locals {
   flask_app_eips = data.terraform_remote_state.flask_app.outputs.flask_app_eips
   flask_app_weights = [1,3]
+  az_letters = ["a","b","c","d"]
 }
 
 
@@ -93,5 +94,16 @@ resource "aws_route53_record" "flask_app" {
   }
 
   set_identifier = "instance-${count.index + 1}"
+  records        = [local.flask_app_eips[count.index]]
+}
+
+#record for each flask app server
+resource "aws_route53_record" "ec_flask_app" {
+  count = length(local.flask_app_eips)
+  zone_id        = aws_route53_zone.env_zone.zone_id
+  name           = "app1-${local.az_letters[count.index]}.${aws_route53_zone.env_zone.name}"
+  type           = "A"
+  ttl            = "300"
+
   records        = [local.flask_app_eips[count.index]]
 }

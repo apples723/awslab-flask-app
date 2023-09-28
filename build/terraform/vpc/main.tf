@@ -26,9 +26,7 @@ provider "aws" {
 
 #Create VPC with private/public in 2azs
 module "vpc" {
-  source  = "aws-ia/vpc/aws"
-  version = ">= 4.2.0"
-
+  source = "git@github.com:aws-ia/terraform-aws-vpc"
   name       = var.vpc_name
   cidr_block = var.vpc_cidr
   az_count   = 2

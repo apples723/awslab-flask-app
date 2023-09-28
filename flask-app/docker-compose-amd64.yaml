@@ -4,7 +4,7 @@ services:
     image: apples723/awslab-flask-app:v1.3.0-amd64
     container_name: awslab-flask
     ports:
-      - 8000:8000
+      - 443:443
     restart: always
 networks:
   default:

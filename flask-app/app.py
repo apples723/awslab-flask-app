@@ -17,7 +17,11 @@ def whoami():
         return f"Welcome to AWSLab-FlaskApp. You currently are on instance: {instance_name}"
     
     except:
-        return "Welcome to AWSLab-FlaskApp. That said it doesn't seem you are actually on an AWS instance"
+        try:
+            container_uri = os.environ['ECS_CONTAINER_METADATA_URI']
+            return f"Welcome to AWSLAB-FlaskApp. You are currently on ecs container: {container_uri}"
+        except:
+            return "Welcome to AWSLab-FlaskApp. That said it doesn't seem you are actually on an AWS instance"
     
 #changable health response
 @app.route("/health/global")

@@ -68,4 +68,4 @@ def redirected():
     return  "The cloud redirected you here!", 302
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", ssl_context="adhoc", port=443, debug=True)

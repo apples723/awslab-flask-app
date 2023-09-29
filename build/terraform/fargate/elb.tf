@@ -2,7 +2,7 @@ resource "aws_alb" "flask_app" {
   name               = "flask-app-load-balancer"
   load_balancer_type = "network"
 
-  security_groups = [data.terraform_remote_state.flask_app.outputs.sg_id]
+  security_groups = [aws_security_group.flask_ecs.id]
   subnet_mapping {
     allocation_id = aws_eip.flask_app_lb[0].allocation_id
     subnet_id     = data.terraform_remote_state.vpc.outputs.public_subnet_ids[0]

@@ -1,0 +1,11 @@
+aws_region="ap-southeast-1"
+env="dev"
+cluster_name="awslab-cloud"
+az_count=2
+app_image="715176017582.dkr.ecr.ap-southeast-1.amazonaws.com/awslab-flask-app"
+app_tag="tessa"
+app_port=443
+app_count=2
+health_check_path="/health/good"
+sub_domain_name="slalom.awslab.cloud"
+force_update=true

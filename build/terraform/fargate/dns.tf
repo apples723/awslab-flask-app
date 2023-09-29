@@ -2,6 +2,7 @@ locals {
   region_short_hand = {
     "us-west-2" = "uswe2"
     "us-east-1" = "usea1"
+    "ap-southeast-1" = "apse1"
   }
   flask_app_alb_fqdn       = "flask.${local.flask_app_alb_sub_domain}"
   flask_app_alb_sub_domain = "${var.env}.${local.region_short_hand[var.aws_region]}.${var.sub_domain_name}"

@@ -28,7 +28,11 @@ def whereami():
         instance_region = h.get_instance_region()
         return f"Current Region: {instance_region}" 
     except:
-        return "Current Region Unkown", 404
+        try: 
+            ecs_region = h.get_ecs_region()
+            return f"Current ECS Taks Region: {ecs_region}"
+        except:
+            return "Current Region Unkown", 404
     
 #changable health response
 @app.route("/health/global")

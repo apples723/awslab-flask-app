@@ -1,5 +1,6 @@
 import boto3
 import requests
+import os
 ssmc = boto3.client("ssm", "us-west-2")
 
 def get_instance_az_letter(az=None):
@@ -8,6 +9,14 @@ def get_instance_az_letter(az=None):
 def get_instance_region():
     region = requests.get("http://169.254.169.254/latest/meta-data/placement/region", timeout=2).text
     return region
+
+def get_ecs_region():
+    try:
+        region = os.environ["AWS_REGION"]
+    except:
+        region = "ERROR GETTING REGION"
+    return region
+
 def get_instance_name(az=None, prefix=None):
     if prefix == None:
         prefix = "flask-app"

@@ -22,6 +22,13 @@ def whoami():
             return f"Welcome to AWSLAB-FlaskApp. You are currently on ecs container: {container_uri}"
         except:
             return "Welcome to AWSLab-FlaskApp. That said it doesn't seem you are actually on an AWS instance"
+@app.route("/whereami")
+def whereami():
+    try:
+        instance_region = h.get_instance_region()
+        return f"Current Region: {instance_region}" 
+    except:
+        return "Current Region Unkown", 404
     
 #changable health response
 @app.route("/health/global")

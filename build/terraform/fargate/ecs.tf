@@ -1,3 +1,7 @@
+locals {
+  ecs_task_role_arn = "arn:aws:iam::715176017582:role/awslab-flask-app-ecs-task-role" #hardcoding as role was built in console
+}
+
 resource "aws_ecs_cluster" "main" {
   name = var.cluster_name
 }
@@ -18,7 +22,7 @@ data "template_file" "flask_app" {
 resource "aws_ecs_task_definition" "flask_app" {
   family                   = "awslab-flask-app"
   execution_role_arn       = data.terraform_remote_state.iam.outputs.ecs_task_execution_role_arn
-  task_role_arn = 
+  task_role_arn = local.ecs_task_role_arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu

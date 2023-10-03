@@ -18,6 +18,7 @@ data "template_file" "flask_app" {
 resource "aws_ecs_task_definition" "flask_app" {
   family                   = "awslab-flask-app"
   execution_role_arn       = data.terraform_remote_state.iam.outputs.ecs_task_execution_role_arn
+  task_role_arn = 
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
@@ -50,3 +51,5 @@ resource "aws_ecs_service" "main" {
   }
   depends_on = [aws_alb.flask_app, aws_alb_listener.front_end, aws_alb_target_group.flask_app]
 }
+
+

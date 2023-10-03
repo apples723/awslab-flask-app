@@ -54,3 +54,8 @@ resource "aws_eip" "flask_app_lb" {
     Name = "flask-app-ecs-lb-${count.index + 1}"
   }
 }
+
+resource "aws_alb_listener_certificate" "flask_latency" {
+  certificate_arn = aws_acm_certificate.flask_app_latency.arn
+  listener_arn = aws_alb_listener.front_end.arn
+}

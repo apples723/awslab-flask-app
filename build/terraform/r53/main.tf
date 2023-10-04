@@ -15,6 +15,14 @@ resource "aws_route53_zone" "env_zone" {
   name = "${local.env}.${local.region_shorthand}.${var.top_level_domain}."
 }
 
+output "env_zone_id" {
+  value = aws_route53_zone.env_zone.zone_id
+}
+
+output "region_zone_id" {
+  value = aws_route53_zone.regional_zone.zone_id
+}
+
 #NS records for each new zone
 resource "aws_route53_record" "regional_ns_record" {
   count  = local.env == "dev" ? 1 : 0

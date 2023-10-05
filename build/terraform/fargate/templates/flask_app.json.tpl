@@ -8,7 +8,7 @@
     "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/awslab-cloud-flask-app",
+          "awslogs-group": "/ecs/awslab-cloud-flask-app-${env}",
           "awslogs-region": "${aws_region}",
           "awslogs-stream-prefix": "ecs"
         }

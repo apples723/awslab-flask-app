@@ -1,9 +1,9 @@
 resource "aws_cloudwatch_log_group" "flask_app" {
-  name              = "/ecs/awslab-cloud-flask-app"
+  name              = "/ecs/awslab-cloud-flask-app-${var.env}"
   retention_in_days = 30
 
   tags = {
-    Name = "awslab-flask-app"
+    Name = "awslab-flask-app-${var.env}"
   }
 }
 

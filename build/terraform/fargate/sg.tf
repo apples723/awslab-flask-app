@@ -5,8 +5,20 @@ locals {
 resource "aws_security_group" "flask_ecs" {
   vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
   tags = {
-    Name = "flask-ecs-sg"
+    Name = "flask-ecs-${var.env}-sg"
   }
+}
+
+
+#allows access from the IP of where the apply is ran
+resource "aws_security_group_rule" "bastion" {
+  count             = 0
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  type              = "ingress"
+  cidr_blocks       = [data.terraform_remote_state.bastion.outputs.bastion_eip]
+  security_group_id = aws_security_group.flask_ecs.id
 }
 
 #allows access from the IP of where the apply is ran

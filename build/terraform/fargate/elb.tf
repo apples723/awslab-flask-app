@@ -1,5 +1,5 @@
 resource "aws_alb" "flask_app" {
-  name               = "flask-app-load-balancer"
+  name               = "flask-app-load-balancer-${var.env}"
   load_balancer_type = "network"
 
   security_groups = [aws_security_group.flask_ecs.id]
@@ -14,13 +14,11 @@ resource "aws_alb" "flask_app" {
 }
 
 resource "aws_alb_target_group" "flask_app" {
-  name        = "flask-app-target-group"
+  name        = "flask-app-target-group-${var.env}"
   port        = var.app_port
   protocol    = "TLS"
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
   target_type = "ip"
-
-
 
   health_check {
     healthy_threshold   = "3"
@@ -51,7 +49,7 @@ resource "aws_alb_listener" "front_end" {
 resource "aws_eip" "flask_app_lb" {
   count = 2
   tags = {
-    Name = "flask-app-ecs-lb-${count.index + 1}"
+    Name = "flask-app-ecs-lb-${count.index + 1}-${var.env}"
   }
 }
 

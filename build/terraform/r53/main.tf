@@ -5,8 +5,15 @@ locals {
   env = split("-", terraform.workspace)[1]
   region_shorthand = split("-", terraform.workspace)[0]
 }
+
+data "aws_route53_zone" "regional" {
+  count = local.env == "dev" ? 0 : 1
+  name = "${local.region_shorthand}.${var.top_level_domain}"
+}
+
 #Create regional DNS zone ("usea1.slalom.awslab.cloud")
 resource "aws_route53_zone" "regional_zone" {
+  count = local.env == "dev" ? 1 : 0 #use count here for dev as that was original workspace used for creating regional records
   name = "${local.region_shorthand}.${var.top_level_domain}."
 }
 
@@ -20,21 +27,22 @@ output "env_zone_id" {
 }
 
 output "region_zone_id" {
-  value = aws_route53_zone.regional_zone.zone_id
+  value = local.env == "dev" ? aws_route53_zone.regional_zone[0].zone_id : data.aws_route53_zone.regional[0].zone_id 
 }
 
 #NS records for each new zone
 resource "aws_route53_record" "regional_ns_record" {
   count  = local.env == "dev" ? 1 : 0
   zone_id = data.aws_route53_zone.tld_zone.zone_id
-  name    = aws_route53_zone.regional_zone.name
+  name    = aws_route53_zone.regional_zone[0].name
   type    = "NS"
   ttl     = "300"
-  records = aws_route53_zone.regional_zone.name_servers
+  records = aws_route53_zone.regional_zone[0].name_servers
 }
 
+
 resource "aws_route53_record" "env_ns_record" {
-  zone_id = aws_route53_zone.regional_zone.zone_id
+  zone_id = local.env == "dev" ? aws_route53_zone.regional_zone[0].zone_id : data.aws_route53_zone.regional[0].zone_id
   name    = aws_route53_zone.env_zone.name
   type    = "NS"
   ttl     = "300"

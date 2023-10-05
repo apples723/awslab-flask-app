@@ -20,6 +20,17 @@ data "terraform_remote_state" "flask_app" {
   workspace = terraform.workspace
 }
 
+
+data "terraform_remote_state" "bastion" {
+  backend = "s3"
+  config = {
+    bucket = "gsiders-tf"
+    key    = "awslab-cloud/bastion/terraform.tfstate"
+    region = "us-east-1"
+  }
+  workspace = terraform.workspace
+}
+
 data "terraform_remote_state" "iam" {
   backend = "s3"
   config = {

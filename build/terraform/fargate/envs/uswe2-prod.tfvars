@@ -1,0 +1,11 @@
+aws_region="us-west-2"
+env="prod"
+cluster_name="awslab-cloud-prod"
+az_count=2
+app_image="715176017582.dkr.ecr.us-west-2.amazonaws.com/awslab-flask-app"
+app_tag="latest"
+app_port=443
+app_count=2
+health_check_path="/health/good"
+sub_domain_name="slalom.awslab.cloud"
+force_update=true

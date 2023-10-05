@@ -87,6 +87,10 @@ resource "aws_eip" "bastion" {
   }
 }
 
+output "bastion_eip" {
+  value = aws_eip.bastion.public_ip
+}
+
 resource "aws_route53_record" "bastion" {
   name = "bastion"
   type = "A"

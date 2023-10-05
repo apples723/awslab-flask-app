@@ -15,12 +15,13 @@ data "template_file" "flask_app" {
     app_port       = var.app_port
     fargate_cpu    = var.fargate_cpu
     fargate_memory = var.fargate_memory
+    env = var.env
     aws_region     = var.aws_region
   }
 }
 
 resource "aws_ecs_task_definition" "flask_app" {
-  family                   = "awslab-flask-app"
+  family                   = "awslab-flask-app-${var.env}"
   execution_role_arn       = data.terraform_remote_state.iam.outputs.ecs_task_execution_role_arn
   task_role_arn = local.ecs_task_role_arn
   network_mode             = "awsvpc"
@@ -35,7 +36,7 @@ resource "aws_ecs_task_definition" "flask_app" {
 }
 
 resource "aws_ecs_service" "main" {
-  name                 = "flask-app-service"
+  name                 = "flask-app-service-${var.env}"
   cluster              = aws_ecs_cluster.main.id
   task_definition      = aws_ecs_task_definition.flask_app.arn
   desired_count        = var.app_count
